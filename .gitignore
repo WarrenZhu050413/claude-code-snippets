@@ -1,0 +1,17 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Backups
+*.backup
+backups/
+
+# Test outputs
+tests/*.html
+tests/*.log
+
+# Temporary files
+*.tmp
+.DS_Store
