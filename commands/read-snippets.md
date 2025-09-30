@@ -1,128 +1,24 @@
 # Read Snippets Command
 
-<input>
-## Parse Arguments
-Process $ARGUMENTS to extract:
-- Optional filter keyword (e.g., "mail", "html")
-- Format flag (--json, --markdown, --html) - defaults to HTML
+Parse $ARGUMENTS for:
+- Optional name filter (e.g., "docker", "mail")
+- Format: --json, --markdown, --html (default: html)
 
-## Example Inputs
-- `/snippets/read-snippet` (shows all snippets in HTML)
-- `/snippets/read-snippet mail` (filter for mail-related snippets)
-- `/snippets/read-snippet --json` (output as JSON)
-- `/snippets/read-snippet --markdown` (output as markdown table)
+## Execute CLI
 
-## Read Context
-Read the snippet configuration and files:
-- ~/.claude/snippets/snippets-config.json
-- ~/.claude/snippets/*.md (all snippet files)
-
-## Build Context
-- Parse all snippet mappings
-- Read snippet file contents
-- Calculate pattern statistics
-- Organize by category/type
-</input>
-
-<workflow>
-## Phase 1: Read Configuration
-Read snippets-config.json to get all mappings:
-- Pattern regex
-- Associated snippet file
-- Extract metadata
-
-## Phase 2: Read Snippet Files
-For each snippet file:
-- Read the content
-- Count lines
-- Extract description if available
-- Note file size
-
-## Phase 3: Analyze Patterns
-For each pattern:
-- Count alternatives (e.g., "mail|email" = 2 alternatives)
-- Identify word boundaries
-- Check complexity
-- List example matches
-
-## Phase 4: Generate Output
-Based on format flag:
-- HTML: Create interactive table with collapsibles
-- JSON: Return structured data
-- Markdown: Simple table format
-
-## Phase 5: Open HTML (if HTML format)
-Write HTML file and open in browser
-
-## Tools to Use:
-- Read: Get snippets-config.json and snippet files
-- Write: Generate HTML output file
-- Bash: Open HTML in browser
-</workflow>
-
-<output>
-## Format
-For HTML output (default):
-- Compact, information-dense table
-- Pattern regex with syntax highlighting
-- Snippet file preview (collapsible)
-- Statistics and metadata
-- Search/filter functionality
-
-For JSON output:
-```json
-{
-  "snippets": [
-    {
-      "pattern": "\\b(mail|email)\\b",
-      "snippet": "mail.md",
-      "alternatives": 2,
-      "content_lines": 15,
-      "content_preview": "..."
-    }
-  ]
-}
+```bash
+cd ~/.claude/snippets && ./snippets-cli.py list \
+  ${name:+$name} \
+  --show-content \
+  --show-stats \
+  --format json
 ```
 
-For Markdown output:
-```
-| Pattern | Snippet File | Alternatives | Lines |
-|---------|--------------|--------------|-------|
-| \b(mail\|email)\b | mail.md | 2 | 15 |
-```
+## Format Output
 
-## Example Output (HTML):
-Opens browser with interactive table showing:
-- 5 snippets configured
-- Patterns with regex visualization
-- Click to expand snippet content
-- Statistics: total patterns, average complexity
-- Quick search/filter box
-</output>
+### HTML Format (default)
 
-<clarification>
-## When to Ask Questions
-Clarify when:
-- Filter keyword matches multiple snippets ambiguously
-- Snippet files are missing but referenced in config
-- Format flag is unrecognized
-
-## Example Questions:
-- "Found 3 snippets matching 'cal'. Show all or filter further?"
-- "Warning: 'docker.md' referenced in config but file not found. Continue?"
-- "Format '--table' not recognized. Did you mean --markdown?"
-
-## How to Ask
-- Present options clearly
-- Show what was found
-- Suggest best match
-</clarification>
-
----
-
-## HTML Template
-
-Use this template for generating the HTML output. Replace the table rows with actual data from snippets-config.json:
+Generate HTML using the template below and open in browser:
 
 ```html
 <!DOCTYPE html>
@@ -130,7 +26,7 @@ Use this template for generating the HTML output. Replace the table rows with ac
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claude Snippets List</title>
+    <title>Claude Snippets</title>
     <style>
         :root {
             --chinese-red: #8B0000;
@@ -272,8 +168,8 @@ Use this template for generating the HTML output. Replace the table rows with ac
 
     <div class="stats">
         <strong>Total Snippets:</strong> {{TOTAL_SNIPPETS}} |
-        <strong>Total Patterns:</strong> {{TOTAL_PATTERNS}} |
-        <strong>Configuration:</strong> ~/.claude/snippets/snippets-config.json
+        <strong>Enabled:</strong> {{ENABLED}} |
+        <strong>Configuration:</strong> ~/.claude/snippets/config.json
     </div>
 
     <input type="text" class="search-box" placeholder="🔍 Search snippets by pattern or file name..." onkeyup="filterTable()">
@@ -281,9 +177,10 @@ Use this template for generating the HTML output. Replace the table rows with ac
     <table id="snippetsTable">
         <thead>
             <tr>
+                <th>Name</th>
                 <th>Pattern (Regex)</th>
-                <th>Snippet File</th>
                 <th>Alternatives</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -315,27 +212,47 @@ Use this template for generating the HTML output. Replace the table rows with ac
 </html>
 ```
 
-## Row Template
-
-For each snippet in the config, generate a row like this:
-
+For each snippet, generate a row:
 ```html
 <tr>
+    <td><span class="file-name">{{NAME}}</span></td>
     <td><code class="pattern">{{PATTERN}}</code></td>
-    <td><span class="file-name">{{SNIPPET_FILE}}</span></td>
     <td><span class="alt-count">{{ALTERNATIVES}}</span></td>
+    <td>{{STATUS}}</td>
     <td>
-        <span class="collapsible" onclick="toggleContent(this)">📄 View Content</span>
-        <div class="content">{{SNIPPET_CONTENT}}</div>
+        <span class="collapsible" onclick="toggleContent(this)">📄 View</span>
+        <div class="content">{{CONTENT}}</div>
     </td>
 </tr>
 ```
 
 Replace:
-- `{{TOTAL_SNIPPETS}}` - Total number of snippets
-- `{{TOTAL_PATTERNS}}` - Total number of patterns
-- `{{TABLE_ROWS}}` - All generated rows
-- `{{PATTERN}}` - The regex pattern (HTML escaped)
-- `{{SNIPPET_FILE}}` - The snippet filename
-- `{{ALTERNATIVES}}` - Number of alternatives in pattern (count `|` separators + 1)
-- `{{SNIPPET_CONTENT}}` - First 500 chars of snippet content (or full if shorter)
+- `{{TOTAL_SNIPPETS}}` - Total count
+- `{{ENABLED}}` - Enabled count
+- `{{TABLE_ROWS}}` - All snippet rows
+- `{{NAME}}` - Snippet name
+- `{{PATTERN}}` - HTML-escaped pattern
+- `{{ALTERNATIVES}}` - Count of alternatives
+- `{{STATUS}}` - ✓ or ✗
+- `{{CONTENT}}` - HTML-escaped content
+
+Save HTML to `/tmp/claude_snippets.html` and open with `open`.
+
+### JSON Format
+
+Output the raw JSON from CLI.
+
+### Markdown Format
+
+Generate markdown table:
+```
+| Name | Pattern | Alternatives | Status |
+|------|---------|--------------|--------|
+| docker | \b(docker|container)\b | 2 | ✓ |
+```
+
+## Error Handling
+
+- If no snippets found: "No snippets configured. Use /snippets/create-snippet to add one."
+- If name filter finds nothing: "Snippet '{name}' not found."
+- If CLI fails: Show error message from JSON output.

@@ -1,3 +1,4 @@
+<html_output>
 ---
 description: Write compact, information-dense HTML content using full width with minimal spacing
 ---
@@ -8,6 +9,9 @@ description: Write compact, information-dense HTML content using full width with
 When providing explanations, documentation, or informational content:
 
 ## Primary Purpose
+
+**VERIFICATION_HASH:** `42a3c667e37a2113`
+
 The HTML output should prioritize **important information first** with **progressive disclosure** through:
 - Critical information prominently displayed and always visible
 - Secondary details in collapsible sections (closed by default)
@@ -671,3 +675,4 @@ document.addEventListener('DOMContentLoaded', function() {
 ```
 
 The resulting HTML should prioritize important information, hide complexity behind collapsibles, and provide clear navigation through progressive disclosure.
+</html_output>

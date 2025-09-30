@@ -1,4 +1,7 @@
 <style_guide>
+
+**VERIFICATION_HASH:** `0387d0bbbcc84f8f`
+
 **DO:**
 
 - Your sentences should be precise, expressing your ideas clearly.

@@ -1,0 +1,64 @@
+{
+  "mappings": [
+    {
+      "pattern": "\\b(codex|cdx)\\b",
+      "snippet": "snippets/codex.md",
+      "enabled": true
+    },
+    {
+      "pattern": "\\b(email|mail|e-mail|message|inbox|send\\s+(to|message))\\b",
+      "snippet": "snippets/mail.md",
+      "enabled": true
+    },
+    {
+      "pattern": "\\b(gcal|g-cal|google\\s*calendar|calendar|event|schedule|appointment)\\b",
+      "snippet": "snippets/gcal.md",
+      "enabled": true
+    },
+    {
+      "pattern": "\\bHTML\\b",
+      "snippet": "snippets/HTML.md",
+      "enabled": true
+    },
+    {
+      "pattern": "\\bSTYLE\\b",
+      "snippet": "snippets/style.md",
+      "enabled": true
+    },
+    {
+      "pattern": "\\b(subagent|sub-agent|sub\\s+agent)s?\\b",
+      "snippet": "snippets/subagent-viz.md",
+      "enabled": true
+    },
+    {
+      "pattern": "\\bPLANHTML\\b",
+      "snippet": "snippets/PLANHTML.md",
+      "enabled": true
+    },
+    {
+      "pattern": "\\bexa\\b",
+      "snippet": "snippets/exa.md",
+      "enabled": true
+    },
+    {
+      "pattern": "\\b(search|searching|websearch|web[\\s-]?search|find[\\s-]?information|look[\\s-]?up|research|researching|comprehensive[\\s-]?search)\\b",
+      "snippet": "snippets/search.md",
+      "enabled": true
+    },
+    {
+      "pattern": "\\b(anna(s|'s)?\\s*archive|annasA)\\b",
+      "snippet": "snippets/annas-archive.md",
+      "enabled": true
+    },
+    {
+      "pattern": "\\b(websearch|web[\\s-]?search|internet[\\s-]?search|online[\\s-]?search|google|search[\\s-]?web|query[\\s-]?optimization)\\b",
+      "snippet": "snippets/websearch.md",
+      "enabled": true
+    },
+    {
+      "pattern": "\\b(snippetV|snippet-verify|verify-snippets?)\\b",
+      "snippet": "snippets/snippet-verify.md",
+      "enabled": true
+    }
+  ]
+}

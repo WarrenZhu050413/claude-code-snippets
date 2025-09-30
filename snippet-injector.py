@@ -6,7 +6,7 @@ from pathlib import Path
 
 # All paths relative to snippets directory
 SNIPPETS_DIR = Path(__file__).parent
-CONFIG_PATH = SNIPPETS_DIR / 'snippets-config.json'
+CONFIG_PATH = SNIPPETS_DIR / 'config.json'
 
 try:
     # Read the hook input
@@ -20,6 +20,10 @@ try:
     # Check for matches (all patterns are regex)
     matched_snippets = []
     for mapping in config['mappings']:
+        # Skip disabled snippets
+        if not mapping.get('enabled', True):
+            continue
+
         pattern = mapping['pattern']
 
         # All patterns are treated as regex with case-insensitive matching

@@ -43,7 +43,7 @@ create_symlink() {
 
 # Install all CRUD commands
 create_symlink "$COMMANDS_SOURCE/create-snippet.md" "$COMMANDS_TARGET/create-snippet.md" "create-snippet"
-create_symlink "$COMMANDS_SOURCE/read-snippet.md" "$COMMANDS_TARGET/read-snippet.md" "read-snippet"
+create_symlink "$COMMANDS_SOURCE/read-snippets.md" "$COMMANDS_TARGET/read-snippets.md" "read-snippets"
 create_symlink "$COMMANDS_SOURCE/update-snippet.md" "$COMMANDS_TARGET/update-snippet.md" "update-snippet"
 create_symlink "$COMMANDS_SOURCE/delete-snippet.md" "$COMMANDS_TARGET/delete-snippet.md" "delete-snippet"
 
@@ -52,11 +52,11 @@ echo -e "${GREEN}✅ Installation complete!${NC}"
 echo
 echo -e "${BLUE}Available commands:${NC}"
 echo "  /snippets/create-snippet   - Create a new snippet"
-echo "  /snippets/read-snippet     - View all snippets (HTML)"
+echo "  /snippets/read-snippets    - View all snippets (HTML)"
 echo "  /snippets/update-snippet   - Edit existing snippet"
 echo "  /snippets/delete-snippet   - Remove a snippet"
 echo
 echo -e "${BLUE}Example usage:${NC}"
-echo "  /snippets/read-snippet"
+echo "  /snippets/read-snippets"
 echo "  /snippets/update-snippet docker"
 echo "  /snippets/delete-snippet docker"
