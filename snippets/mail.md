@@ -1,6 +1,6 @@
 <email>
 
-**VERIFICATION_HASH:** `b1dfe8a5b3398c9a`
+**VERIFICATION_HASH:** `f0b2983e961b49a0`
 
 - For emails you send, add: "Sent from Claude Code" at the end.
 - Whenever sending an email, first draft a reply for me to see

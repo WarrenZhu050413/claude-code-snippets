@@ -1,6 +1,6 @@
 <style_guide>
 
-**VERIFICATION_HASH:** `0387d0bbbcc84f8f`
+**VERIFICATION_HASH:** `dd2f3e12528617ef`
 
 **DO:**
 

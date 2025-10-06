@@ -28,20 +28,38 @@ try:
 
         # All patterns are treated as regex with case-insensitive matching
         if re.search(pattern, prompt, re.IGNORECASE):
-            matched_snippets.append(mapping['snippet'])
+            # Store snippet files array and separator
+            snippet_files = mapping['snippet']  # Now always an array
+            separator = mapping.get('separator', '\n')
+            matched_snippets.append((snippet_files, separator))
 
     # Remove duplicates while preserving order
-    matched_snippets = list(dict.fromkeys(matched_snippets))
+    seen = set()
+    unique_snippets = []
+    for snippet_tuple in matched_snippets:
+        key = (tuple(snippet_tuple[0]), snippet_tuple[1])
+        if key not in seen:
+            seen.add(key)
+            unique_snippets.append(snippet_tuple)
+    matched_snippets = unique_snippets
 
     # Load and append snippets
     if matched_snippets:
         additional_context = []
-        for snippet_file in matched_snippets:
-            snippet_path = SNIPPETS_DIR / snippet_file
-            if snippet_path.exists():
-                with open(snippet_path) as f:
-                    content = f.read()
-                    additional_context.append(content)
+        for snippet_files, separator in matched_snippets:
+            # Load all files for this snippet and join with separator
+            file_contents = []
+            for snippet_file in snippet_files:
+                snippet_path = SNIPPETS_DIR / snippet_file
+                if snippet_path.exists():
+                    with open(snippet_path) as f:
+                        content = f.read()
+                        file_contents.append(content)
+
+            # Join files with separator and add to context
+            if file_contents:
+                combined_content = separator.join(file_contents)
+                additional_context.append(combined_content)
 
         if additional_context:
             # Return JSON with additional context

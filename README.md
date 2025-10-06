@@ -87,7 +87,7 @@ Claude Snippets is created to enable precise context control for Claude Code. I 
 Use the CRUD commands to manage your snippets:
 
 ```bash
-# Create a new snippet
+# Create a single-file snippet
 /snippets/create-snippet docker "\b(docker|container)\b"
 
 # View all snippets in interactive HTML
@@ -99,5 +99,35 @@ Use the CRUD commands to manage your snippets:
 # Delete a snippet
 /snippets/delete-snippet docker
 ```
+
+### Multi-File Snippets
+
+Snippets can now reference multiple files that are concatenated when injected:
+
+```bash
+# Create a multi-file snippet using CLI
+python3 ~/.claude/snippets/snippets_cli.py create mysnippet \
+  --pattern '\b(mysnippet)\b' \
+  --files snippets/part1.md snippets/part2.md \
+  --separator '\n\n---\n\n'
+
+# Or manually edit config.json
+{
+  "name": "mysnippet",
+  "pattern": "\\b(mysnippet)\\b",
+  "snippet": [
+    "snippets/part1.md",
+    "snippets/part2.md"
+  ],
+  "separator": "\n\n---\n\n",
+  "enabled": true
+}
+```
+
+**Features:**
+- All snippets now use array format: `"snippet": ["file.md"]`
+- Multiple files are concatenated with a configurable separator (default: `\n`)
+- Backward compatible with single-file snippets
+- Custom separators allow for visual breaks between files
 
 See `commands/README.md` for detailed command documentation.

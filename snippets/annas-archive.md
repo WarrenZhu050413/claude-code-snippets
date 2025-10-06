@@ -1,6 +1,6 @@
 # Anna's Archive API - Developer Guide
 
-**VERIFICATION_HASH:** `ced7d096bfb5826d`
+**VERIFICATION_HASH:** `504782213aca5a5e`
 
 ## Usage Guidelines
 

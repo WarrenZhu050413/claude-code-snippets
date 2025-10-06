@@ -10,7 +10,7 @@ When providing explanations, documentation, or informational content:
 
 ## Primary Purpose
 
-**VERIFICATION_HASH:** `42a3c667e37a2113`
+**VERIFICATION_HASH:** `459a1cb45b02aa6f`
 
 The HTML output should prioritize **important information first** with **progressive disclosure** through:
 - Critical information prominently displayed and always visible
@@ -21,9 +21,10 @@ The HTML output should prioritize **important information first** with **progres
 - Smart use of space with folded content for better focus
 
 ## File Handling Instructions
-1. **ALWAYS** write the HTML content to a file named `claude_{description_of_the_subject}.html` in the current directory, where {description_of_the_subject} is a lowercase, underscore-separated description of the content (e.g., `claude_git_analysis.html`, `claude_code_review.html`, `claude_project_overview.html`)
-2. After writing the file, use the Bash tool to open it with: `open claude_{description_of_the_subject}.html` (macOS) or appropriate command for the OS
-3. Inform the user that the HTML has been saved as `claude_{description_of_the_subject}.html` and opened
+1. **ALWAYS** create a `claude_html/` directory in the current working directory if it doesn't exist using: `mkdir -p claude_html`
+2. Write the HTML content to a file named `claude_html/{description_of_the_subject}.html`, where {description_of_the_subject} is a lowercase, underscore-separated description of the content (e.g., `claude_html/git_analysis.html`, `claude_html/code_review.html`, `claude_html/project_overview.html`)
+3. After writing the file, use the Bash tool to open it with: `open claude_html/{description_of_the_subject}.html` (macOS) or appropriate command for the OS
+4. Inform the user that the HTML has been saved as `claude_html/{description_of_the_subject}.html` and opened
 
 ## Compact Design Principles
 - **Two-Column Priority**: Default to two-column layout for maximum information density, especially for code examples that are comparing between alternatives, as well as sections with multiple short bullet points.
@@ -533,9 +534,214 @@ Color usage guidelines:
 - Light Cream (#FAFAF0): Subtle gradient endpoints, content area backgrounds
 
 ## Self-Contained Requirements
-- No external dependencies (no CDN links, external stylesheets, or scripts)
+- No external dependencies (no CDN links, external stylesheets, or scripts) - EXCEPT for Mermaid diagrams which may use CDN
 - All styling must be inline CSS within the document
 - Ensure the HTML renders properly in any modern browser
+
+## Mermaid Diagram Integration
+
+### When to Use Mermaid Diagrams
+Use Mermaid.js diagrams when visual representation enhances understanding:
+- **Flowcharts**: Algorithms, workflows, decision trees, process flows
+- **Sequence Diagrams**: API interactions, message passing, temporal flows
+- **Class Diagrams**: Type hierarchies, OOP structures, domain models
+- **State Diagrams**: State transitions, lifecycle management, workflow states
+
+### Mermaid Setup
+Include Mermaid.js from CDN (exception to no-CDN rule):
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+            // Warm beige background with dark text - perfect balance
+            background: '#F5F0E8',
+            primaryColor: '#7A1712',
+            primaryTextColor: '#1a1a1a',       // Dark text everywhere
+            primaryBorderColor: '#6B4423',
+
+            lineColor: '#4A5568',
+            secondaryColor: '#1B3A57',
+            tertiaryColor: '#2D5016',
+
+            mainBkg: '#EDE8DC',
+            textColor: '#1a1a1a',              // Dark text
+            nodeBorder: '#6B4423',
+
+            // Sequence diagram
+            actorBkg: '#D4C4B0',
+            actorBorder: '#6B4423',
+            actorTextColor: '#1a1a1a',         // Dark text
+            actorLineColor: '#6B4423',
+            signalColor: '#1a1a1a',
+            signalTextColor: '#1a1a1a',        // Dark text
+            labelBoxBkgColor: '#7A1712',
+            labelBoxBorderColor: '#6B4423',
+            labelTextColor: '#fff',            // White on dark background only
+            loopTextColor: '#1a1a1a',          // Dark text
+            noteBkgColor: '#FEF3C7',
+            noteTextColor: '#6B4423',          // Dark text
+            noteBorderColor: '#D97706',
+            activationBorderColor: '#6B4423',
+            activationBkgColor: '#D4C4B0',
+
+            // State diagram
+            labelColor: '#1a1a1a',             // Dark text
+
+            // Class diagram
+            classText: '#1a1a1a',              // Dark text
+
+            fontSize: '14px',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif'
+        },
+        flowchart: {
+            curve: 'basis',
+            padding: 20,
+            useMaxWidth: true,
+            htmlLabels: true
+        },
+        sequence: {
+            actorMargin: 50,
+            diagramMarginX: 8,
+            diagramMarginY: 8,
+            useMaxWidth: true
+        }
+    });
+});
+</script>
+```
+
+### Mermaid Container Styling
+```css
+.diagram-container {
+    background: white;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 16px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Warm beige gradient background - perfect balance for readability */
+.mermaid {
+    background: linear-gradient(135deg, #F5F0E8 0%, #EDE8DC 100%);
+    padding: 20px;
+    margin: 8px 0;
+    border-radius: 4px;
+    border: 1px solid #D4C4B0;
+}
+```
+
+### Mermaid Usage Examples
+
+**Flowchart (Process Flow):**
+```html
+<div class="diagram-container">
+    <div class="mermaid">
+flowchart TD
+    Start([Start]) --> Input[Process Data]
+    Input --> Check{Valid?}
+    Check -->|Yes| Save[Save Result]
+    Check -->|No| Error[Show Error]
+    Save --> End([End])
+    Error --> End
+
+    style Start fill:#90EE90
+    style End fill:#90EE90
+    style Error fill:#FFB6C6
+    </div>
+</div>
+```
+
+**Sequence Diagram (Interactions):**
+```html
+<div class="diagram-container">
+    <div class="mermaid">
+sequenceDiagram
+    actor User
+    participant Client
+    participant API
+    participant DB
+
+    User->>Client: Request data
+    Client->>API: GET /api/data
+    API->>DB: Query
+    DB-->>API: Results
+    API-->>Client: JSON response
+    Client->>User: Display data
+    </div>
+</div>
+```
+
+**Class Diagram (Structure):**
+```html
+<div class="diagram-container">
+    <div class="mermaid">
+classDiagram
+    class BaseClass {
+        +String id
+        +save() void
+    }
+    class ChildClass {
+        +String name
+        +validate() Boolean
+    }
+    BaseClass <|-- ChildClass
+    </div>
+</div>
+```
+
+**State Diagram (State Machine):**
+```html
+<div class="diagram-container">
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Processing : start()
+    Processing --> Success : complete()
+    Processing --> Error : fail()
+    Success --> [*]
+    Error --> Idle : retry()
+    </div>
+</div>
+```
+
+### Mermaid Best Practices
+1. **Keep it Simple**: Max 10-15 nodes per diagram
+2. **Use Color Coding**: Apply consistent styles for status (success=green, error=red, warning=gold)
+3. **Label Clearly**: Short, descriptive text (3-5 words max per node)
+4. **Group Logically**: Use subgraphs for related components
+5. **Add Context**: Use notes for important constraints or timing
+6. **Match Theme**: Use Chinese color palette in custom styles
+7. **Progressive Disclosure**: Place complex diagrams in collapsible sections
+
+### Custom Mermaid Styling
+Apply custom styles to individual nodes for status indication:
+
+```html
+<div class="mermaid">
+flowchart TD
+    Start[Start Process] --> Process[Processing]
+    Process --> Check{Valid?}
+    Check -->|Yes| Success[Success]
+    Check -->|No| Error[Error]
+
+    style Start fill:#2D5016,stroke:#1a1a1a,stroke-width:2px,color:#fff
+    style Success fill:#1B3A57,stroke:#1a1a1a,stroke-width:2px,color:#fff
+    style Error fill:#C53030,stroke:#1a1a1a,stroke-width:2px,color:#fff
+    style Process fill:#6B4423,stroke:#1a1a1a,stroke-width:2px,color:#fff
+</div>
+```
+
+**Recommended node colors (earthy palette):**
+- Success/Start: `#2D5016` (Forest green)
+- Process/Active: `#1B3A57` (Navy blue) or `#6B4423` (Warm brown)
+- Error/Warning: `#C53030` (Red) or `#D97706` (Orange)
+- Info/Default: `#4A5568` (Slate gray)
 
 ## Critical Progressive Disclosure Requirements
 **ALWAYS implement these requirements for focused information delivery:**

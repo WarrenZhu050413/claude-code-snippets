@@ -1,7 +1,7 @@
 <exa>
 ## When to Use Exa vs WebSearch
 
-**VERIFICATION_HASH:** `d4e04a5136e4d0ee`
+**VERIFICATION_HASH:** `4d3588183474c059`
 
 
 ### Use EXA for:

@@ -79,9 +79,15 @@ class SnippetManager:
 
     def _find_snippet(self, name: str) -> Optional[Dict]:
         """Find snippet by name"""
-        snippet_file = f"snippets/{name}.md"
         for mapping in self.config["mappings"]:
-            if mapping["snippet"] == snippet_file:
+            # First check explicit name field if present
+            if "name" in mapping and mapping["name"] == name:
+                return mapping
+
+            # Fallback: check if name.md file is in the snippet array
+            snippet_file = f"snippets/{name}.md"
+            snippet_array = mapping["snippet"]
+            if snippet_file in snippet_array:
                 return mapping
         return None
 
@@ -167,7 +173,8 @@ class SnippetManager:
         return match.group(1) if match else None
 
     def create(self, name: str, pattern: str, content: str = None,
-               file_path: str = None, enabled: bool = True, force: bool = False) -> Dict:
+               file_path: str = None, file_paths: List[str] = None,
+               separator: str = '\n', enabled: bool = True, force: bool = False) -> Dict:
         """Create a new snippet"""
         # Validate inputs
         if not name:
@@ -195,40 +202,70 @@ class SnippetManager:
                 {"pattern": pattern, "conflicts_with": conflicts}
             )
 
-        # Get content
-        if file_path:
-            source_path = Path(file_path).expanduser().resolve()
-            if not source_path.exists():
-                raise SnippetError(
-                    "FILE_ERROR",
-                    f"Source file not found: {file_path}",
-                    {"path": str(source_path)}
-                )
-            with open(source_path) as f:
-                content = f.read()
-        elif content is None:
-            raise SnippetError("INVALID_INPUT", "Either --content or --file is required")
+        # Determine snippet files to use
+        snippet_files = []
+        total_size = 0
 
-        # Create snippets directory if needed
-        self.snippets_dir.mkdir(parents=True, exist_ok=True)
+        if file_paths:
+            # Multi-file mode: reference existing files in snippets/ directory
+            for fp in file_paths:
+                # Ensure path is relative to snippets/
+                if not fp.startswith("snippets/"):
+                    fp = f"snippets/{Path(fp).name}"
 
-        # Write snippet file
-        with open(snippet_path, 'w') as f:
-            f.write(content)
+                full_path = self.snippets_dir.parent / fp
+                if not full_path.exists():
+                    raise SnippetError(
+                        "FILE_ERROR",
+                        f"Source file not found: {fp}",
+                        {"path": str(full_path)}
+                    )
+                snippet_files.append(fp)
+                total_size += full_path.stat().st_size
 
-        # Add verification hash
-        verification_hash = self._generate_verification_hash(name)
-        self._add_verification_hash(snippet_path, verification_hash)
+        else:
+            # Single-file mode: create new snippet file
+            if file_path:
+                source_path = Path(file_path).expanduser().resolve()
+                if not source_path.exists():
+                    raise SnippetError(
+                        "FILE_ERROR",
+                        f"Source file not found: {file_path}",
+                        {"path": str(source_path)}
+                    )
+                with open(source_path) as f:
+                    content = f.read()
+            elif content is None:
+                raise SnippetError("INVALID_INPUT", "Either --content, --file, or --files is required")
 
-        # Update or add config mapping
+            # Create snippets directory if needed
+            self.snippets_dir.mkdir(parents=True, exist_ok=True)
+
+            # Write snippet file
+            with open(snippet_path, 'w') as f:
+                f.write(content)
+
+            # Add verification hash
+            verification_hash = self._generate_verification_hash(name)
+            self._add_verification_hash(snippet_path, verification_hash)
+
+            snippet_files = [snippet_file]
+            total_size = snippet_path.stat().st_size
+
+        # Update or add config mapping (always use array format)
         existing = self._find_snippet(name)
         if existing:
             existing["pattern"] = pattern
             existing["enabled"] = enabled
+            existing["snippet"] = snippet_files  # Always array
+            existing["separator"] = separator
+            existing["name"] = name  # Add explicit name field
         else:
             self.config["mappings"].append({
+                "name": name,  # Add explicit name field
                 "pattern": pattern,
-                "snippet": snippet_file,
+                "snippet": snippet_files,  # Always array
+                "separator": separator,
                 "enabled": enabled
             })
 
@@ -237,11 +274,13 @@ class SnippetManager:
         return {
             "name": name,
             "pattern": pattern,
-            "file": snippet_file,
+            "files": snippet_files,
+            "file_count": len(snippet_files),
+            "separator": separator,
             "enabled": enabled,
             "alternatives": self._count_alternatives(pattern),
-            "size_bytes": snippet_path.stat().st_size,
-            "verification_hash": verification_hash
+            "size_bytes": total_size,
+            "verification_hash": verification_hash if not file_paths else None
         }
 
     def list(self, name: str = None, show_content: bool = False,
@@ -250,29 +289,53 @@ class SnippetManager:
         snippets = []
 
         for mapping in self.config["mappings"]:
-            snippet_name = Path(mapping["snippet"]).stem
+            # snippet is now always an array
+            snippet_files = mapping["snippet"]
+
+            # Use explicit name field if present, otherwise extract from first file
+            if "name" in mapping:
+                snippet_name = mapping["name"]
+            else:
+                snippet_name = Path(snippet_files[0]).stem
 
             # Filter by name if specified
             if name and snippet_name != name:
                 continue
 
-            snippet_path = self.snippets_dir.parent / mapping["snippet"]
-
             snippet_info = {
                 "name": snippet_name,
                 "pattern": mapping["pattern"],
-                "file": mapping["snippet"],
+                "files": snippet_files,  # Show all files
+                "file_count": len(snippet_files),
+                "separator": mapping.get("separator", "\n"),
                 "enabled": mapping.get("enabled", True),
                 "alternatives": self._count_alternatives(mapping["pattern"])
             }
 
-            if snippet_path.exists():
-                snippet_info["size_bytes"] = snippet_path.stat().st_size
-                if show_content:
-                    with open(snippet_path) as f:
-                        snippet_info["content"] = f.read()
-            else:
+            # Collect info from all files
+            total_size = 0
+            all_content = []
+            missing_files = []
+
+            for snippet_file in snippet_files:
+                snippet_path = self.snippets_dir.parent / snippet_file
+                if snippet_path.exists():
+                    total_size += snippet_path.stat().st_size
+                    if show_content:
+                        with open(snippet_path) as f:
+                            all_content.append(f.read())
+                else:
+                    missing_files.append(snippet_file)
+
+            snippet_info["size_bytes"] = total_size
+            if show_content and all_content:
+                # Join content with separator
+                separator = mapping.get("separator", "\n")
+                snippet_info["content"] = separator.join(all_content)
+
+            if missing_files:
                 snippet_info["missing"] = True
+                snippet_info["missing_files"] = missing_files
 
             snippets.append(snippet_info)
 
@@ -359,8 +422,8 @@ class SnippetManager:
             if snippet_path.exists():
                 snippet_path.rename(new_snippet_path)
 
-            # Update config
-            existing["snippet"] = new_snippet_file
+            # Update config (always use array format)
+            existing["snippet"] = [new_snippet_file]
             changes["name"] = {"old": name, "new": rename}
             name = rename
 
@@ -557,6 +620,9 @@ def main():
     create_parser.add_argument("--pattern", required=True, help="Regex pattern")
     create_parser.add_argument("--content", help="Snippet content (inline)")
     create_parser.add_argument("--file", help="Read content from file")
+    create_parser.add_argument("--files", nargs="+", help="Multiple source files to combine")
+    create_parser.add_argument("--separator", default="\n",
+                              help="Separator between files (default: newline)")
     create_parser.add_argument("--enabled", type=bool, default=True,
                               help="Enable snippet (default: true)")
     create_parser.add_argument("--force", action="store_true",
@@ -610,6 +676,7 @@ def main():
         if args.command == "create":
             data = manager.create(
                 args.name, args.pattern, args.content, args.file,
+                getattr(args, 'files', None), args.separator,
                 args.enabled, args.force
             )
             print(format_output(True, "create", data,

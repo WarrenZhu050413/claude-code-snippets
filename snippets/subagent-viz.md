@@ -1,7 +1,7 @@
 <subagent_viz>
 # Subagent Dependency Graph Visualization
 
-**VERIFICATION_HASH:** `59f315e92c39e75a`
+**VERIFICATION_HASH:** `2e02f5c31a97033c`
 
 
 When the user mentions "subagent(s)" in context of wanting to visualize or summarize what happened, create a comprehensive task dependency graph and workflow visualization.

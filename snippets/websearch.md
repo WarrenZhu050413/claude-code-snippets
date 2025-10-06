@@ -1,6 +1,6 @@
 # WebSearch Optimization Guide
 
-**VERIFICATION_HASH:** `3bae729dadda6368`
+**VERIFICATION_HASH:** `cc6fbd5a78092b66`
 
 ## When to Use WebSearch
 

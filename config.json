@@ -1,63 +1,175 @@
 {
   "mappings": [
     {
-      "pattern": "\\b(codex|cdx)\\b",
-      "snippet": "snippets/codex.md",
-      "enabled": true
+      "pattern": "\\b(codex|cdx)\\b\\.?",
+      "snippet": [
+        "snippets/codex.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "codex"
     },
     {
-      "pattern": "\\b(email|mail|e-mail|message|inbox|send\\s+(to|message))\\b",
-      "snippet": "snippets/mail.md",
-      "enabled": true
+      "pattern": "\\b(email|mail|e-mail|message|inbox|send\\s+(to|message))\\b\\.?",
+      "snippet": [
+        "snippets/mail.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "mail"
     },
     {
-      "pattern": "\\b(gcal|g-cal|google\\s*calendar|calendar|event|schedule|appointment)\\b",
-      "snippet": "snippets/gcal.md",
-      "enabled": true
+      "pattern": "\\b(gcal|g-cal|google\\s*calendar|calendar|event|schedule|appointment)\\b\\.?",
+      "snippet": [
+        "snippets/gcal.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "gcal"
     },
     {
-      "pattern": "\\bHTML\\b",
-      "snippet": "snippets/HTML.md",
-      "enabled": true
+      "pattern": "\\bHTML\\b\\.?",
+      "snippet": [
+        "snippets/HTML.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "HTML"
     },
     {
-      "pattern": "\\bSTYLE\\b",
-      "snippet": "snippets/style.md",
-      "enabled": true
+      "pattern": "\\bSTYLE\\b\\.?",
+      "snippet": [
+        "snippets/style.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "style"
     },
     {
-      "pattern": "\\b(subagent|sub-agent|sub\\s+agent)s?\\b",
-      "snippet": "snippets/subagent-viz.md",
-      "enabled": true
+      "pattern": "\\b(subagent|sub-agent|sub\\s+agent)s?\\b\\.?",
+      "snippet": [
+        "snippets/subagent-viz.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "subagent-viz"
     },
     {
-      "pattern": "\\bPLANHTML\\b",
-      "snippet": "snippets/PLANHTML.md",
-      "enabled": true
+      "pattern": "\\b(PLANHTML|html_plan|html-plan)\\b\\.?",
+      "snippet": [
+        "snippets/PLANHTML.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "PLANHTML"
     },
     {
-      "pattern": "\\bexa\\b",
-      "snippet": "snippets/exa.md",
-      "enabled": true
+      "pattern": "\\bexa\\b\\.?",
+      "snippet": [
+        "snippets/exa.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "exa"
     },
     {
-      "pattern": "\\b(search|searching|websearch|web[\\s-]?search|find[\\s-]?information|look[\\s-]?up|research|researching|comprehensive[\\s-]?search)\\b",
-      "snippet": "snippets/search.md",
-      "enabled": true
+      "pattern": "\\b(search|searching|websearch|web[\\s-]?search|find[\\s-]?information|look[\\s-]?up|research|researching|comprehensive[\\s-]?search)\\b\\.?",
+      "snippet": [
+        "snippets/search.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "search"
     },
     {
-      "pattern": "\\b(anna(s|'s)?\\s*archive|annasA)\\b",
-      "snippet": "snippets/annas-archive.md",
-      "enabled": true
+      "pattern": "\\b(anna(s|'s)?\\s*archive|annasA)\\b\\.?",
+      "snippet": [
+        "snippets/annas-archive.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "annas-archive"
     },
     {
-      "pattern": "\\b(websearch|web[\\s-]?search|internet[\\s-]?search|online[\\s-]?search|google|search[\\s-]?web|query[\\s-]?optimization)\\b",
-      "snippet": "snippets/websearch.md",
-      "enabled": true
+      "pattern": "\\b(websearch|web[\\s-]?search|internet[\\s-]?search|online[\\s-]?search|google|search[\\s-]?web|query[\\s-]?optimization)\\b\\.?",
+      "snippet": [
+        "snippets/websearch.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "websearch"
     },
     {
-      "pattern": "\\b(snippetV|snippet-verify|verify-snippets?)\\b",
-      "snippet": "snippets/snippet-verify.md",
+      "pattern": "\\b(snippetV|snippet-verify|verify-snippets?)\\b\\.?",
+      "snippet": [
+        "snippets/snippet-verify.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "snippet-verify"
+    },
+    {
+      "pattern": "\\b(playwrightchromeextensions?|playwrightextensions?)\\b\\.?",
+      "snippet": [
+        "snippets/playwright_chrome_extensions.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "playwright_chrome_extensions"
+    },
+    {
+      "pattern": "\\b(claude-?docs?)\\b\\.?",
+      "snippet": [
+        "snippets/claude-docs.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "claude-docs"
+    },
+    {
+      "pattern": "\\b(ht|htkung)\\b\\.?",
+      "snippet": [
+        "snippets/htkung.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "htkung"
+    },
+    {
+      "pattern": "\\b(shit)?(POST|post)\\b\\.?",
+      "snippet": [
+        "snippets/post.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "post"
+    },
+    {
+      "pattern": "\\bNOTIFY\\b\\.?",
+      "snippet": [
+        "snippets/NOTIFY.md"
+      ],
+      "enabled": true,
+      "separator": "\n",
+      "name": "NOTIFY"
+    },
+    {
+      "pattern": "\\b(multitest|multi-test)\\b\\.?",
+      "snippet": [
+        "snippets/multitest_part1.md",
+        "snippets/multitest_part2.md"
+      ],
+      "separator": "\\n\\n---\\n\\n",
+      "enabled": true,
+      "name": "multitest"
+    },
+    {
+      "name": "TEST",
+      "pattern": "\\bTEST\\b\\.?",
+      "snippet": [
+        "snippets/TEST.md"
+      ],
+      "separator": "\n",
       "enabled": true
     }
   ]

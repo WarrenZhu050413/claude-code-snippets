@@ -242,6 +242,11 @@ Save HTML to `/tmp/claude_snippets.html` and open with `open`.
 
 Output the raw JSON from CLI.
 
+**If a specific snippet name was requested**, after showing the JSON, display:
+```
+Regex pattern: {{PATTERN}}
+```
+
 ### Markdown Format
 
 Generate markdown table:
@@ -249,6 +254,11 @@ Generate markdown table:
 | Name | Pattern | Alternatives | Status |
 |------|---------|--------------|--------|
 | docker | \b(docker|container)\b | 2 | ✓ |
+```
+
+**If a specific snippet name was requested**, after showing the table, display:
+```
+Regex pattern: {{PATTERN}}
 ```
 
 ## Error Handling

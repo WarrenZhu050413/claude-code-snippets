@@ -6,12 +6,22 @@ __pycache__/
 
 # Backups
 *.backup
+*.bak
 backups/
 
 # Test outputs
 tests/*.html
 tests/*.log
+TEST_RESULTS.md
+test_*.py
+snippets/TEST.md
+snippets/multitest_*.md
 
 # Temporary files
 *.tmp
 .DS_Store
+claude_html/
+
+# Personal/private files
+post.md
+htkung.md
